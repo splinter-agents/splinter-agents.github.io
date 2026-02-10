@@ -73,12 +73,12 @@ radial-gradient(at 0% 100%, hsla(0, 0%, 95%, 0.6) 0, transparent 50%);
     </p>
     
     <div class="flex flex-col sm:flex-row gap-4 mb-20 items-center justify-center w-full max-w-2xl mx-auto">
-        <div class="relative w-full sm:w-80 group text-left">
+        <div class="relative w-full sm:w-96 group text-left">
             <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
                 <span class="text-neutral-400 font-mono text-base">$</span>
             </div>
-            <input type="text" value="pip install splinter-agent" readonly="" class="w-full font-mono bg-white border border-neutral-200 rounded-full pl-8 pr-12 py-4 text-base font-medium text-[#1B3139] focus:outline-none focus:ring-4 focus:ring-[#8B0000]/10 focus:border-[#8B0000]/40 transition-all shadow-sm hover:border-neutral-300 cursor-text select-all">
-            <button class="absolute inset-y-2 right-2 p-2 hover:bg-neutral-100 rounded-full text-neutral-500 transition-colors" title="Copy">
+            <input type="text" id="pip-install-command" value="pip install splinter-agent" readonly="" class="w-full font-mono bg-white border border-neutral-200 rounded-full pl-8 pr-12 py-4 text-base font-medium text-[#1B3139] text-center focus:outline-none focus:ring-4 focus:ring-[#8B0000]/10 focus:border-[#8B0000]/40 transition-all shadow-sm hover:border-neutral-300 cursor-text select-all">
+            <button onclick="copyCommand(event)" class="absolute inset-y-2 right-2 p-2 hover:bg-neutral-100 rounded-full text-neutral-500 transition-colors" title="Copy">
                 <iconify-icon icon="solar:copy-linear" width="20"></iconify-icon>
             </button>
         </div>
@@ -1396,5 +1396,38 @@ radial-gradient(at 0% 100%, hsla(0, 0%, 95%, 0.6) 0, transparent 50%);
         </div>
     </div>
 </footer>
+
+<script>
+function copyCommand(event) {
+    const input = document.getElementById('pip-install-command');
+    input.select();
+    input.setSelectionRange(0, 99999); // For mobile devices
+    const button = event.currentTarget;
+    const originalHTML = button.innerHTML;
+    
+    navigator.clipboard.writeText(input.value).then(() => {
+        // Visual feedback
+        button.innerHTML = '<iconify-icon icon="solar:check-circle-linear" width="20"></iconify-icon>';
+        button.classList.add('text-green-600');
+        setTimeout(() => {
+            button.innerHTML = originalHTML;
+            button.classList.remove('text-green-600');
+        }, 2000);
+    }).catch(err => {
+        // Fallback for older browsers
+        try {
+            document.execCommand('copy');
+            button.innerHTML = '<iconify-icon icon="solar:check-circle-linear" width="20"></iconify-icon>';
+            button.classList.add('text-green-600');
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.classList.remove('text-green-600');
+            }, 2000);
+        } catch (e) {
+            console.error('Failed to copy:', e);
+        }
+    });
+}
+</script>
 
 </body></html>
